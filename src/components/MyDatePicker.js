@@ -1,16 +1,14 @@
 import DatePicker from 'material-ui/DatePicker'
-import React, { Componet } from 'react'
+import React from 'react'
 
-export default class MyDatePicker extends React.Component {
-  render () {
-    return (
-      <div>
-        <DatePicker
-          floatingLabelText="日付"
-          autoOk={true}
-          onChange={this.props.onChange}
-          value={this.props.value} />
-      </div>
-    )
-  }
-}
+const MyDatePicker = ({onChange, value}) => (
+  <div>
+    <DatePicker
+      floatingLabelText="日付"
+      autoOk={true}
+      onChange={onChange}
+      value={value} />
+  </div>
+)
+
+export default MyDatePicker
