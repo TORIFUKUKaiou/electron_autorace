@@ -6,6 +6,7 @@ import Player from './Player.js'
 import MyDatePicker from './MyDatePicker'
 import SelectPlace from './SelectPlace'
 import SelectRaceNumber from './SelectRaceNumber'
+import PlayButton from './PlayButton'
 
 const style = {
   container: {
@@ -53,7 +54,7 @@ export default class App extends React.Component {
             <MyDatePicker onChange={this.handleDateChange} value={this.state.date} />
             <SelectPlace  onChange={this.handlePlaceChange} value={this.state.place} />
             <SelectRaceNumber  onChange={this.handleRaceNumberChange} value={this.state.race} />
-            <div><RaisedButton label={this.state.playing ? "Pause" : "Play"} primary={!this.state.playing} onClick={this.handleOnClickListener} style={style.button} /></div>
+            <PlayButton label={this.state.playing ? "Pause" : "Play"} primary={!this.state.playing} onClick={this.handleOnClickListener} style={style.button} />
           </div>
           <Player 
             url={this.buildUrl()}
