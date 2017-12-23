@@ -7,6 +7,8 @@ import SelectPlace from './SelectPlace'
 import SelectRaceNumber from './SelectRaceNumber'
 import PlayButton from './PlayButton'
 
+import { actionCreators } from '../reducer/reducer'
+
 const style = {
   container: {
     display: 'flex'
@@ -23,18 +25,40 @@ const z2 = (v) => {
 
 
 export default class App extends React.Component {
-  state = {
-    date:   new Date(),
-    place:  'kawaguchi',
-    race:   12,
-    playing:   false
+  state = {}
 
+  componentWillMount() {
+    const {store} = this.props
+
+    const {date, place, race, playing} = store.getState()
+    this.setState({date, place, race, playing})
+
+    this.unsubscribe = store.subscribe(() => {
+      const {date, place, race, playing} = store.getState()
+      this.setState({date, place, race, playing})
+    })
   }
 
-  handleDateChange  = (_, date) => { this.setState({date: date}) }
-  handlePlaceChange = (event, index, value) => this.setState({place: value})
-  handleRaceNumberChange = (event, index, value) => this.setState({race: value})
-  handleOnClickListener = e => this.setState({playing: !this.state.playing})
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
+  handleDateChange  = (_, date) => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_date(date))
+  }
+  handlePlaceChange = (event, index, value) => { 
+    const {store} = this.props
+    store.dispatch(actionCreators.update_place(value))
+  }
+  handleRaceNumberChange = (event, index, value) => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_race(value))
+  }
+  handleOnClickListener = e => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_playing())
+  }
 
   buildUrl = () => {
     return 'http://sp-auto.digi-c.com/autorace/_definst_/' + this.state.place + '/'
@@ -46,18 +70,20 @@ export default class App extends React.Component {
   }
 
   render () {
+    const {date, place, race, playing} = this.state
+
     return (
       <MuiThemeProvider>
         <div style={style.container}>
           <div>
-            <MyDatePicker onChange={this.handleDateChange} value={this.state.date} />
-            <SelectPlace  onChange={this.handlePlaceChange} value={this.state.place} />
-            <SelectRaceNumber  onChange={this.handleRaceNumberChange} value={this.state.race} />
-            <PlayButton label={this.state.playing ? "Pause" : "Play"} primary={!this.state.playing} onClick={this.handleOnClickListener} style={style.button} />
+            <MyDatePicker onChange={this.handleDateChange} value={date} />
+            <SelectPlace  onChange={this.handlePlaceChange} value={place} />
+            <SelectRaceNumber  onChange={this.handleRaceNumberChange} value={race} />
+            <PlayButton label={playing ? "Pause" : "Play"} primary={!playing} onClick={this.handleOnClickListener} style={style.button} />
           </div>
           <Player 
             url={this.buildUrl()}
-            playing={this.state.playing}
+            playing={playing}
           />
         </div>
       </MuiThemeProvider>
