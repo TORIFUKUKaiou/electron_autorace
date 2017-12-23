@@ -3,6 +3,7 @@ export const types = {
   UPDATE_PLACE:   'UPDATE_PLACE',
   UPDATE_RACE:    'UPDATE_RACE',
   UPDATE_PLAYING: 'UPDATE_PLAYING',
+  UPDATE_TOGGLE:  'UPDATE_TOGGLE'
 }
 
 export const actionCreators = {
@@ -17,18 +18,22 @@ export const actionCreators = {
   },
   update_playing: () => {
     return {type: types.UPDATE_PLAYING}
+  },
+  update_toggle: (item) => {
+    return {type: types.UPDATE_TOGGLE, payload: item}
   }
 }
 
 const initialState = {
   date:   new Date(),
   place:  'kawaguchi',
-  race:   12,
-  playing:   false
+  race:   6,
+  playing:   false,
+  toggled:   true
 }
 
 export const reducer = (state = initialState, action) => {
-  const {date, place, race, playing} = state
+  const {date, place, race, playing, toggled} = state
   const {type, payload} = action
 
   switch (type) {
@@ -54,6 +59,12 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         playing: !playing,
+      }
+    }
+    case types.UPDATE_TOGGLE: {
+      return {
+        ...state,
+        toggled: payload,
       }
     }
   }

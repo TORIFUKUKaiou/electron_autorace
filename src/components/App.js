@@ -6,6 +6,7 @@ import MyDatePicker from './MyDatePicker'
 import SelectPlace from './SelectPlace'
 import SelectRaceNumber from './SelectRaceNumber'
 import PlayButton from './PlayButton'
+import ContinueToggle from './ContinueToggle'
 
 import { actionCreators } from '../reducer/reducer'
 
@@ -30,12 +31,12 @@ export default class App extends React.Component {
   componentWillMount() {
     const {store} = this.props
 
-    const {date, place, race, playing} = store.getState()
-    this.setState({date, place, race, playing})
+    const {date, place, race, playing, toggled} = store.getState()
+    this.setState({date, place, race, playing, toggled})
 
     this.unsubscribe = store.subscribe(() => {
-      const {date, place, race, playing} = store.getState()
-      this.setState({date, place, race, playing})
+      const {date, place, race, playing, toggled} = store.getState()
+      this.setState({date, place, race, playing, toggled})
     })
   }
 
@@ -59,6 +60,22 @@ export default class App extends React.Component {
     const {store} = this.props
     store.dispatch(actionCreators.update_playing())
   }
+  onToggle = (event, isInputChecked) => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_toggle(isInputChecked))
+  }
+  onEnded = () => {
+    console.log('onEnded')
+    const {store} = this.props
+    const {race, toggled} = store.getState()
+    if (!toggled) {
+      return
+    }
+    if (race >= 12) {
+      return
+    }
+    store.dispatch(actionCreators.update_race(race + 1))
+  }
 
   buildUrl = () => {
     return 'http://sp-auto.digi-c.com/autorace/_definst_/' + this.state.place + '/'
@@ -70,7 +87,7 @@ export default class App extends React.Component {
   }
 
   render () {
-    const {date, place, race, playing} = this.state
+    const {date, place, race, playing, toggled} = this.state
 
     return (
       <MuiThemeProvider>
@@ -80,10 +97,12 @@ export default class App extends React.Component {
             <SelectPlace  onChange={this.handlePlaceChange} value={place} />
             <SelectRaceNumber  onChange={this.handleRaceNumberChange} value={race} />
             <PlayButton label={playing ? "Pause" : "Play"} primary={!playing} onClick={this.handleOnClickListener} style={style.button} />
+            <ContinueToggle toggled={toggled} onToggle={this.onToggle} />
           </div>
           <Player 
             url={this.buildUrl()}
             playing={playing}
+            onEnded={this.onEnded}
           />
         </div>
       </MuiThemeProvider>
