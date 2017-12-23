@@ -72,3 +72,7 @@ chrome-user-data
 node_modules/
 SHASUMS256.txt
 **/package-lock.json
+
+/autorace.asar
+/autorace-darwin-x64/
+/autorace-win32-x64/
