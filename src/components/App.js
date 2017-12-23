@@ -6,6 +6,9 @@ import MyDatePicker from './MyDatePicker'
 import SelectPlace from './SelectPlace'
 import SelectRaceNumber from './SelectRaceNumber'
 import PlayButton from './PlayButton'
+import ContinueToggle from './ContinueToggle'
+
+import { actionCreators } from '../reducer/reducer'
 
 const style = {
   container: {
@@ -23,18 +26,56 @@ const z2 = (v) => {
 
 
 export default class App extends React.Component {
-  state = {
-    date:   new Date(),
-    place:  'kawaguchi',
-    race:   12,
-    playing:   false
+  state = {}
 
+  componentWillMount() {
+    const {store} = this.props
+
+    const {date, place, race, playing, toggled} = store.getState()
+    this.setState({date, place, race, playing, toggled})
+
+    this.unsubscribe = store.subscribe(() => {
+      const {date, place, race, playing, toggled} = store.getState()
+      this.setState({date, place, race, playing, toggled})
+    })
   }
 
-  handleDateChange  = (_, date) => { this.setState({date: date}) }
-  handlePlaceChange = (event, index, value) => this.setState({place: value})
-  handleRaceNumberChange = (event, index, value) => this.setState({race: value})
-  handleOnClickListener = e => this.setState({playing: !this.state.playing})
+  componentWillUnmount() {
+    this.unsubscribe()
+  }
+
+  handleDateChange  = (_, date) => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_date(date))
+  }
+  handlePlaceChange = (event, index, value) => { 
+    const {store} = this.props
+    store.dispatch(actionCreators.update_place(value))
+  }
+  handleRaceNumberChange = (event, index, value) => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_race(value))
+  }
+  handleOnClickListener = e => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_playing())
+  }
+  onToggle = (event, isInputChecked) => {
+    const {store} = this.props
+    store.dispatch(actionCreators.update_toggle(isInputChecked))
+  }
+  onEnded = () => {
+    console.log('onEnded')
+    const {store} = this.props
+    const {race, toggled} = store.getState()
+    if (!toggled) {
+      return
+    }
+    if (race >= 12) {
+      return
+    }
+    store.dispatch(actionCreators.update_race(race + 1))
+  }
 
   buildUrl = () => {
     return 'http://sp-auto.digi-c.com/autorace/_definst_/' + this.state.place + '/'
@@ -46,18 +87,22 @@ export default class App extends React.Component {
   }
 
   render () {
+    const {date, place, race, playing, toggled} = this.state
+
     return (
       <MuiThemeProvider>
         <div style={style.container}>
           <div>
-            <MyDatePicker onChange={this.handleDateChange} value={this.state.date} />
-            <SelectPlace  onChange={this.handlePlaceChange} value={this.state.place} />
-            <SelectRaceNumber  onChange={this.handleRaceNumberChange} value={this.state.race} />
-            <PlayButton label={this.state.playing ? "Pause" : "Play"} primary={!this.state.playing} onClick={this.handleOnClickListener} style={style.button} />
+            <MyDatePicker onChange={this.handleDateChange} value={date} />
+            <SelectPlace  onChange={this.handlePlaceChange} value={place} />
+            <SelectRaceNumber  onChange={this.handleRaceNumberChange} value={race} />
+            <PlayButton label={playing ? "Pause" : "Play"} primary={!playing} onClick={this.handleOnClickListener} style={style.button} />
+            <ContinueToggle toggled={toggled} onToggle={this.onToggle} />
           </div>
           <Player 
             url={this.buildUrl()}
-            playing={this.state.playing}
+            playing={playing}
+            onEnded={this.onEnded}
           />
         </div>
       </MuiThemeProvider>
