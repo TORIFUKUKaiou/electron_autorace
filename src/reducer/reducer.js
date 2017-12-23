@@ -7,19 +7,19 @@ export const types = {
 }
 
 export const actionCreators = {
-  update_date: (item) => {
+  updateDate: (item) => {
     return {type: types.UPDATE_DATE, payload: item}
   },
-  update_place: (item) => {
+  updatePlace: (item) => {
     return {type: types.UPDATE_PLACE, payload: item}
   },
-  update_race: (item) => {
+  updateRace: (item) => {
     return {type: types.UPDATE_RACE, payload: item}
   },
-  update_playing: () => {
+  updatePlaying: () => {
     return {type: types.UPDATE_PLAYING}
   },
-  update_toggle: (item) => {
+  updateToggle: (item) => {
     return {type: types.UPDATE_TOGGLE, payload: item}
   }
 }

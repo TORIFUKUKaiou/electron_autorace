@@ -46,26 +46,25 @@ export default class App extends React.Component {
 
   handleDateChange  = (_, date) => {
     const {store} = this.props
-    store.dispatch(actionCreators.update_date(date))
+    store.dispatch(actionCreators.updateDate(date))
   }
   handlePlaceChange = (event, index, value) => { 
     const {store} = this.props
-    store.dispatch(actionCreators.update_place(value))
+    store.dispatch(actionCreators.updatePlace(value))
   }
   handleRaceNumberChange = (event, index, value) => {
     const {store} = this.props
-    store.dispatch(actionCreators.update_race(value))
+    store.dispatch(actionCreators.updateRace(value))
   }
   handleOnClickListener = e => {
     const {store} = this.props
-    store.dispatch(actionCreators.update_playing())
+    store.dispatch(actionCreators.updatePlaying())
   }
   onToggle = (event, isInputChecked) => {
     const {store} = this.props
-    store.dispatch(actionCreators.update_toggle(isInputChecked))
+    store.dispatch(actionCreators.updateToggle(isInputChecked))
   }
   onEnded = () => {
-    console.log('onEnded')
     const {store} = this.props
     const {race, toggled} = store.getState()
     if (!toggled) {
@@ -74,7 +73,7 @@ export default class App extends React.Component {
     if (race >= 12) {
       return
     }
-    store.dispatch(actionCreators.update_race(race + 1))
+    store.dispatch(actionCreators.updateRace(race + 1))
   }
 
   buildUrl = () => {
