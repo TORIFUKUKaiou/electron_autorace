@@ -1,8 +1,5 @@
 # electron_autorace
 - [Electron](https://electronjs.org/)を利用して作った[オートレース](http://autorace.jp/)の過去動画を再生するアプリです
-- Windows, Macで動作します
-
-![](docs/images/B6024E1D37CC474388054FD34413967F.png)
 
 # Requirements
 - [Node.js](https://nodejs.org/ja/)
