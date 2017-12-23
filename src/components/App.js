@@ -58,7 +58,8 @@ export default class App extends React.Component {
   }
   handleOnClickListener = e => {
     const {store} = this.props
-    store.dispatch(actionCreators.updatePlaying())
+    const {playing} = store.getState()
+    store.dispatch(actionCreators.updatePlaying(!playing))
   }
   onToggle = (event, isInputChecked) => {
     const {store} = this.props
@@ -66,7 +67,7 @@ export default class App extends React.Component {
   }
   onEnded = () => {
     const {store} = this.props
-    const {race, toggled} = store.getState()
+    const {race, toggled, playing} = store.getState()
     if (!toggled) {
       return
     }
@@ -74,6 +75,23 @@ export default class App extends React.Component {
       return
     }
     store.dispatch(actionCreators.updateRace(race + 1))
+    if (!playing) {
+      store.dispatch(actionCreators.updatePlaying(true))
+    }
+  }
+  onPause = () => {
+    const {store} = this.props
+    const {playing} = store.getState()
+    if (playing) {
+      store.dispatch(actionCreators.updatePlaying(false))
+    }
+  }
+  onPlay = () => {
+    const {store} = this.props
+    const {playing} = store.getState()
+    if (!playing) {
+      store.dispatch(actionCreators.updatePlaying(true))
+    }
   }
 
   buildUrl = () => {
@@ -102,6 +120,8 @@ export default class App extends React.Component {
             url={this.buildUrl()}
             playing={playing}
             onEnded={this.onEnded}
+            onPause={this.onPause}
+            onPlay={this.onPlay}
           />
         </div>
       </MuiThemeProvider>

@@ -16,8 +16,8 @@ export const actionCreators = {
   updateRace: (item) => {
     return {type: types.UPDATE_RACE, payload: item}
   },
-  updatePlaying: () => {
-    return {type: types.UPDATE_PLAYING}
+  updatePlaying: (item) => {
+    return {type: types.UPDATE_PLAYING, payload: item}
   },
   updateToggle: (item) => {
     return {type: types.UPDATE_TOGGLE, payload: item}
@@ -58,7 +58,7 @@ export const reducer = (state = initialState, action) => {
     case types.UPDATE_PLAYING: {
       return {
         ...state,
-        playing: !playing,
+        playing: payload,
       }
     }
     case types.UPDATE_TOGGLE: {
